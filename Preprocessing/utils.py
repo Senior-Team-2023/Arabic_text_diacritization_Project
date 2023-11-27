@@ -1,12 +1,12 @@
 import re
 import numpy as np
-from character_tokenizer import CharacterTokenizer
+# from character_tokenizer import CharacterTokenizer
 # from nltk.tokenize.stanford_segmenter import StanfordSegmenter
 
 
 # read ./dataset/{file_name}.txt line by line and return a list of filtered strings
-def read_data(file_name):
-    with open(f"./dataset/{file_name}.txt", "r", encoding="utf-8") as f:
+def read_data(path:str):
+    with open(path, "r", encoding="utf-8") as f:
         # train_set = f.read().splitlines()
         return f.read()
 
@@ -26,7 +26,7 @@ def filter_data(data):
 
 
 # character tokenizer
-def char_tokenizer(data):
-    tokenizer = CharacterTokenizer()
-    tokenizer.train("./dataset/train.txt")
-    return tokenizer.tokenize(data[0:1000])
+# def char_tokenizer(data):
+#     tokenizer = CharacterTokenizer()
+#     tokenizer.train("./dataset/train.txt")
+#     return tokenizer.tokenize(data[0:1000])
