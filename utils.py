@@ -1,7 +1,6 @@
 import re
 import numpy as np
-import tkseem as tk
-
+from character_tokenizer import CharacterTokenizer
 # from nltk.tokenize.stanford_segmenter import StanfordSegmenter
 
 
@@ -23,4 +22,7 @@ def filter_data(data):
 
 # character tokenizer
 def char_tokenizer(data):
-    return [list(line) for line in data]
+    # return [list(line) for line in data]
+    tokenizer = CharacterTokenizer()
+    tokenizer.train("./dataset/train.txt")
+    return tokenizer.tokenize(data[0:1000])
