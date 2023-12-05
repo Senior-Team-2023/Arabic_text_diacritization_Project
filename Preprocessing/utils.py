@@ -39,3 +39,8 @@ def char_tokenizer(data: str):
     # char_to_int = dict((c, i) for i, c in enumerate(characters))
     # int_to_char = dict((i, c) for i, c in enumerate(characters))
     return characters
+
+def split_data_to_words(data: str) -> list:
+    words = re.split(r" ", data)
+    return words
+
