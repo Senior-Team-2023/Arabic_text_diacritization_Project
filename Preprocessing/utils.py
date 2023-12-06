@@ -1,6 +1,6 @@
 import re
 import numpy as np
-
+from Preprocessing import character_encoding
 # from character_tokenizer import CharacterTokenizer
 # from nltk.tokenize.stanford_segmenter import StanfordSegmenter
 
@@ -48,4 +48,20 @@ def char_tokenizer(data: str):
 def split_data_to_words(data: str) -> list:
     words = re.split(r" ", data)
     return words
+
+def concatinate_word_char_embeddings(text_without_diacritics, diacritic_list, embedding_model):
+    concatinated_vector = []
+    diacritic_list_2 = []
+    for i, word in enumerate(text_without_diacritics):
+        # if word does not have corresponding embedding don't add it to the training set and remove its corresponding diacritic list
+        try:
+            word_vector = embedding_model.vector(word)
+            diacritic_list_2.append(diacritic_list[i])
+        except:
+            continue
+        for char in word:
+            char_vector = character_encoding.CharToOneHOt(char)
+            concatinated_vector.append(np.concatenate((word_vector, char_vector), axis=None))
+
+    return concatinated_vector, diacritic_list_2
 

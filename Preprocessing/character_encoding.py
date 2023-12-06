@@ -71,28 +71,23 @@ def map_text_to_diacritic(diacritic_list):
     return mapped_list
 
 # This function is responsible for separating diacritics from Arabic text for the hole TRAINING data
-def PrepareTrainData(data):
+def PrepareData(data):
     text_without_diacritics = []
     diacritic_list = []
     for i, word in enumerate(data):
+        # if word == "" or word.isspace(): continue
         text, diacritic = remove_diacritics(word)
         # print(i," - ", word , " - ", text, " : ", map_text_to_diacritic(diacritic))
         text_without_diacritics.append(text)
         diacritic_list.append(diacritic)
     return text_without_diacritics, diacritic_list
 
-# This function is responsible for separating diacritics from Arabic text for the hole TEST data
-def PrepareTestData(data):
-    text_without_diacritics_test = []
-    for i, word in enumerate(data):
-        text, _ = remove_diacritics(word)
-        text_without_diacritics_test.append(text)
-    return text_without_diacritics_test
 
 # This function is responsible for separating diacritics from Arabic text for the hole TRAINING data
 def RemoveDiacriticFromSentence(data):
     text_without_diacritics = []
     for i, sentence in enumerate(data):
+        if sentence == "" or sentence.isspace(): continue
         text, _ = remove_diacritics(sentence,True)
         text_without_diacritics.append(text)
     return text_without_diacritics
@@ -179,12 +174,9 @@ def remove_diacritics(text, is_sentence = False):
 # word = "نَقَلَ بَعْضُهُمْ أَنَّ الْقُهُسْتَانِيَّ كَتَبَ عَلَى هَامِشِ نُسْخَتِهِ أَنَّ هَذَا مُخْتَصٌّ بِالْأَذَانِ"
 # word = "عَنْ سَعِيدِ بْنِ الْمُسَيِّبِ"
 # word = "بُرًّا"
-# word = "اللّهِ  "
-# print(SHADDA)
 # word = " يَأْخُذُونَ بَعْضَ مَا تَيَسَّرَ لَهُمْ أَخْذُهُ فَيَخْتَلِسُونَهُ وَيَجْعَلُونَهُ تَحْتَهُمْ حَتَّى إذَا رَجَعُوا إلَى بُيُوتِهِمْ أَخْرَجُوهُ     "
+# word = "بُيُوتِهِمْ"
 # # for i,c in enumerate(word):
 # #     print(i,"- ",c)
 # text_without_diacritics, diacritic_list = remove_diacritics(word)
 # print_text_to_diacritic_mapping(text_without_diacritics,diacritic_list)
-
-# print(CharToOneHOt("ب"))
