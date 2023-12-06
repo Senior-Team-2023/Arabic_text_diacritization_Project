@@ -1,4 +1,4 @@
-# Define a function to remove diacritics from Arabic text
+# Define Diacritics
 KASRA = "\u0650"
 DAMMA = "\u064F"
 FATHA = "\u064E"
@@ -17,6 +17,7 @@ SHADDA_KASRATAN =  KASRATAN + SHADDA
 # Define a list of diacritics
 # Number of Classes = diacritics + "" (No diacritic)
 DIACRITICS = [DAMMA, FATHA,  KASRA, DAMMATAN, FATHATAN, KASRATAN, SHADDA_DAMMA, SHADDA_FATHA,  SHADDA_KASRA, SHADDA_DAMMATAN, SHADDA_FATHATAN, SHADDA_KASRATAN, SHADDA, SUKUN, ""]
+ARABIC_ALPHABIT = "اآإءبتثجحخدذرزسشصضطظعغفقكلمنهويأئؤىة"
 
 # This function is responsible for mapping diacritics to their corresponding strings
 def diacritic_to_str(diacritic):
@@ -75,7 +76,7 @@ def PrepareTrainData(data):
     diacritic_list = []
     for i, word in enumerate(data):
         text, diacritic = remove_diacritics(word)
-        #print(i," - ", word , " - ", text, " : ", utils.map_text_to_diacritic(diacritic))
+        # print(i," - ", word , " - ", text, " : ", map_text_to_diacritic(diacritic))
         text_without_diacritics.append(text)
         diacritic_list.append(diacritic)
     return text_without_diacritics, diacritic_list
@@ -88,6 +89,24 @@ def PrepareTestData(data):
         text_without_diacritics_test.append(text)
     return text_without_diacritics_test
 
+# This function is responsible for separating diacritics from Arabic text for the hole TRAINING data
+def RemoveDiacriticFromSentence(data):
+    text_without_diacritics = []
+    for i, sentence in enumerate(data):
+        text, _ = remove_diacritics(sentence,True)
+        text_without_diacritics.append(text)
+    return text_without_diacritics
+
+# This function returns one hot encoding for a given arabic character
+def CharToOneHOt(char):
+    # Check if the given character is in the Arabic alphabet
+    if char not in ARABIC_ALPHABIT:
+        raise ValueError("Invalid Arabic character : \'" + char + "\'")
+
+    # Create a dictionary mapping each character to its one-hot encoding
+    one_hot_encoding = [1 if c == char else 0 for c in ARABIC_ALPHABIT]
+
+    return one_hot_encoding
 
 
 # This function is responsible for separating diacritics from Arabic text
@@ -95,13 +114,15 @@ def PrepareTestData(data):
 # Example :
 # Input : "اللّهِ"
 # Output : "الله" , ["", "", SHADDA, KASRA]      
-def remove_diacritics(text):
+def remove_diacritics(text, is_sentence = False):
     diacritic_list = []
     text_without_diacritics = ""
-    text = " " + text + " " # Add padding 
+    if not is_sentence:
+        text = " " + text + " " # Add padding 
     for i in range(len(text)):
         c = text[i]
-        if c == " " or c == '\n' or c == "":
+        
+        if not is_sentence and (c == " " or c == '\n' or c == ""):
             continue
         # Check if the character is a diacritic
         if c in DIACRITICS:
@@ -138,15 +159,15 @@ def remove_diacritics(text):
                 diacritic_list.append(c)
         else: 
             # Check if the next character is a diacritic or shadda -> because of SHADDA ... and ... SHADDA
-            if i+1 < len(text) and text[i+1] not in DIACRITICS:
+            if (i+1 < len(text) and text[i+1] not in DIACRITICS) or (i+1 == len(text)):
                 # Add an empty string to the diacritic list
                 diacritic_list.append("")
-
+                
             text_without_diacritics += c
 
     # print_text_to_diacritic_mapping(text_without_diacritics,diacritic_list)
             
-    assert (len(text_without_diacritics) == len(diacritic_list)), f"Error : Word : {text} Len text ({len(text_without_diacritics)}) != Len diacritic ({len(diacritic_list)}) list have different sizes, "
+    assert (len(text_without_diacritics) == len(diacritic_list)), f"Error : Text : {text} Len ({len(text_without_diacritics)}) != Len diacritic ({len(diacritic_list)}) list have different sizes, "
 
     return text_without_diacritics, diacritic_list
 
@@ -159,9 +180,11 @@ def remove_diacritics(text):
 # word = "عَنْ سَعِيدِ بْنِ الْمُسَيِّبِ"
 # word = "بُرًّا"
 # word = "اللّهِ  "
-print(SHADDA)
-word = " يَأْخُذُونَ بَعْضَ مَا تَيَسَّرَ لَهُمْ أَخْذُهُ فَيَخْتَلِسُونَهُ وَيَجْعَلُونَهُ تَحْتَهُمْ حَتَّى إذَا رَجَعُوا إلَى بُيُوتِهِمْ أَخْرَجُوهُ     "
-# for i,c in enumerate(word):
-#     print(i,"- ",c)
-text_without_diacritics, diacritic_list = remove_diacritics(word)
-print_text_to_diacritic_mapping(text_without_diacritics,diacritic_list)
+# print(SHADDA)
+# word = " يَأْخُذُونَ بَعْضَ مَا تَيَسَّرَ لَهُمْ أَخْذُهُ فَيَخْتَلِسُونَهُ وَيَجْعَلُونَهُ تَحْتَهُمْ حَتَّى إذَا رَجَعُوا إلَى بُيُوتِهِمْ أَخْرَجُوهُ     "
+# # for i,c in enumerate(word):
+# #     print(i,"- ",c)
+# text_without_diacritics, diacritic_list = remove_diacritics(word)
+# print_text_to_diacritic_mapping(text_without_diacritics,diacritic_list)
+
+# print(CharToOneHOt("ب"))

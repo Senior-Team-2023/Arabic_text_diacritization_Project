@@ -18,7 +18,7 @@ def filter_data(data: str) -> str:
     # remove all numbers
     data = re.sub(r"\d+", "", data)
     # regex to remove all special characters
-    data = re.sub(r"[][//,;?()$:-{}_*]", "", data)
+    data = re.sub(r"[][//,;\?؟()$:\-{}_*؛،.:«»]", "", data)
     # remove all english letters
     data = re.sub(r"[a-zA-Z]", "", data)
     # Substituting multiple spaces with single space
@@ -27,9 +27,14 @@ def filter_data(data: str) -> str:
 
 
 # split data into sentences
+
 def split_data_to_sentences(data: str) -> list:
+    # Split data into sentences using punctuation marks and newlines as delimiters
     sentences = re.split(r"[.?!\n]", data)
+    # Remove empty sentences
+    sentences = [sentence for sentence in sentences if sentence.strip()]
     return sentences
+
 
 
 # character tokenizer returns a list of unique characters
