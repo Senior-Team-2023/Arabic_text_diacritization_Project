@@ -1,3 +1,6 @@
+# Ignore binary files
+*.bin
+
 # PDF
 .pdf
 # Byte-compiled / optimized / DLL files
