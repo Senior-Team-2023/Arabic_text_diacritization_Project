@@ -12,3 +12,5 @@ class ConfigLoader:
 
             for key, value in self.data.items():
                 self.data[key] = value
+
+        return self.data
