@@ -58,6 +58,8 @@ def concatinate_word_char_embeddings(text_without_diacritics, diacritic_list, em
             word_vector = embedding_model.vector(word)
             diacritic_list_2.append(diacritic_list[i])
         except:
+            # char_vector = character_encoding.CharToOneHOt(char)
+            # concatinated_vector.append(np.concatenate((word_vector, char_vector), axis=None))
             continue
         for char in word:
             char_vector = character_encoding.CharToOneHOt(char)

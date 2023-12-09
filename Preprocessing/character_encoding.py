@@ -174,9 +174,10 @@ def remove_diacritics(text, is_sentence = False):
 # word = "نَقَلَ بَعْضُهُمْ أَنَّ الْقُهُسْتَانِيَّ كَتَبَ عَلَى هَامِشِ نُسْخَتِهِ أَنَّ هَذَا مُخْتَصٌّ بِالْأَذَانِ"
 # word = "عَنْ سَعِيدِ بْنِ الْمُسَيِّبِ"
 # word = "بُرًّا"
-# word = " يَأْخُذُونَ بَعْضَ مَا تَيَسَّرَ لَهُمْ أَخْذُهُ فَيَخْتَلِسُونَهُ وَيَجْعَلُونَهُ تَحْتَهُمْ حَتَّى إذَا رَجَعُوا إلَى بُيُوتِهِمْ أَخْرَجُوهُ     "
+word = " يَأْخُذُونَ بَعْضَ مَا تَيَسَّرَ لَهُمْ أَخْذُهُ فَيَخْتَلِسُونَهُ وَيَجْعَلُونَهُ تَحْتَهُمْ حَتَّى إذَا رَجَعُوا إلَى بُيُوتِهِمْ أَخْرَجُوهُ     "
 # word = "بُيُوتِهِمْ"
 # # for i,c in enumerate(word):
 # #     print(i,"- ",c)
-# text_without_diacritics, diacritic_list = remove_diacritics(word)
-# print_text_to_diacritic_mapping(text_without_diacritics,diacritic_list)
+text_without_diacritics, diacritic_list = remove_diacritics(word)
+print_text_to_diacritic_mapping(text_without_diacritics,diacritic_list)
+print("Text without diacritics : ", text_without_diacritics)

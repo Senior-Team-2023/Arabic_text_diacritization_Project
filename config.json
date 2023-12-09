@@ -1,6 +1,6 @@
 {
     "is_training": true,
-    "embedding_vector_size": 50,
+    "embedding_vector_size": 100,
     "batch_size": 64,
-    "num_epochs": 5
+    "num_epochs": 7
 }
