@@ -1,0 +1,5 @@
+Try BiStm
+
+- Deep learning on character level
+- Use 2 vectors for word embeddings (line and sentence) then average both vectors
+- Dynamic word embedding

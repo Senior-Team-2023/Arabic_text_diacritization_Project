@@ -1,10 +1,10 @@
 {
-    "number_test_of_words": 20000, 
-    "number_validation_of_words": 3000, 
+    "number_test_of_words": 40000, 
+    "number_validation_of_words": 4000, 
     "classifier": "lstm", 
     "embedding": "fasttext", 
     "is_training": true,
-    "embedding_vector_size": 200,
+    "embedding_vector_size": 300,
     "batch_size": 64,
-    "num_epochs": 7
+    "num_epochs": 8
 }

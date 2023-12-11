@@ -65,7 +65,7 @@ def concatinate_word_char_embeddings(text_without_diacritics, diacritic_list, em
             continue
         for char in word:
             char_vector = character_encoding.CharToOneHOt(char)
-            concatinated_vector.append(np.concatenate((char_vector , word_vector), axis=None))
+            concatinated_vector.append(np.concatenate((word_vector, char_vector), axis=None))
 
     return concatinated_vector, diacritic_list_2
 
