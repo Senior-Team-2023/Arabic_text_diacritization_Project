@@ -2,6 +2,7 @@
 KASRA = "\u0650"
 DAMMA = "\u064F"
 FATHA = "\u064E"
+FATHA2 = '`'
 KASRATAN = "\u064D"
 DAMMATAN = "\u064C"
 FATHATAN = "\u064B"
@@ -16,7 +17,7 @@ SHADDA_KASRATAN =  KASRATAN + SHADDA
 
 # Define a list of diacritics
 # Number of Classes = diacritics + "" (No diacritic)
-DIACRITICS = [DAMMA, FATHA,  KASRA, DAMMATAN, FATHATAN, KASRATAN, SHADDA_DAMMA, SHADDA_FATHA,  SHADDA_KASRA, SHADDA_DAMMATAN, SHADDA_FATHATAN, SHADDA_KASRATAN, SHADDA, SUKUN, ""]
+DIACRITICS = [DAMMA, FATHA, FATHA2,  KASRA, DAMMATAN, FATHATAN, KASRATAN, SHADDA_DAMMA, SHADDA_FATHA,  SHADDA_KASRA, SHADDA_DAMMATAN, SHADDA_FATHATAN, SHADDA_KASRATAN, SHADDA, SUKUN, ""]
 ARABIC_ALPHABIT = "اآإءبتثجحخدذرزسشصضطظعغفقكلمنهويأئؤىة"
 
 # This function is responsible for mapping diacritics to their corresponding strings
@@ -28,6 +29,8 @@ def diacritic_to_str(diacritic):
     elif diacritic == DAMMA:
         diacritic = "DAMMA"
     elif diacritic == FATHA:
+        diacritic = "FATHA"
+    elif diacritic == FATHA2:
         diacritic = "FATHA"
     elif diacritic == KASRATAN:
         diacritic = "KASRATAN"
@@ -51,13 +54,20 @@ def diacritic_to_str(diacritic):
         diacritic = "SHADDA_KASRATAN"
     elif diacritic == SHADDA:
         diacritic = "SHADDA"
+    else:
+        diacritic = " "
     return diacritic
 
 # This function is responsible for printing the mapping between Arabic text and diacritics
 # For result debbugging purposes
-def print_text_to_diacritic_mapping(text_without_diacritics, diacritic_list):
-    for i in range(len(diacritic_list)):
-        print(text_without_diacritics[i] ,":", diacritic_to_str(diacritic_list[i]))
+def print_text_to_diacritic_mapping(text_without_diacritics, diacritic_list, is_sentence = False):
+    j = 0
+    for i in range(len(text_without_diacritics)):
+        if is_sentence == True and (text_without_diacritics[i] == " " or text_without_diacritics[i] == '\n' or text_without_diacritics[i] == ""):
+            print(text_without_diacritics[i] ,":", "")
+        else:
+            print(text_without_diacritics[i] ,":", diacritic_to_str(diacritic_list[j]))
+            j+=1
 
 # This function is responsible for mapping diacritics to their corresponding strings
 # For result visualization purposes 
@@ -171,13 +181,15 @@ def remove_diacritics(text, is_sentence = False):
     
     
 #################### Test the function with an example word ####################
-# word = "نَقَلَ بَعْضُهُمْ أَنَّ الْقُهُسْتَانِيَّ كَتَبَ عَلَى هَامِشِ نُسْخَتِهِ أَنَّ هَذَا مُخْتَصٌّ بِالْأَذَانِ"
-# word = "عَنْ سَعِيدِ بْنِ الْمُسَيِّبِ"
-# word = "بُرًّا"
-word = " يَأْخُذُونَ بَعْضَ مَا تَيَسَّرَ لَهُمْ أَخْذُهُ فَيَخْتَلِسُونَهُ وَيَجْعَلُونَهُ تَحْتَهُمْ حَتَّى إذَا رَجَعُوا إلَى بُيُوتِهِمْ أَخْرَجُوهُ     "
-# word = "بُيُوتِهِمْ"
-# # for i,c in enumerate(word):
-# #     print(i,"- ",c)
-text_without_diacritics, diacritic_list = remove_diacritics(word)
-print_text_to_diacritic_mapping(text_without_diacritics,diacritic_list)
-print("Text without diacritics : ", text_without_diacritics)
+# # word = "نَقَلَ بَعْضُهُمْ أَنَّ الْقُهُسْتَانِيَّ كَتَبَ عَلَى هَامِشِ نُسْخَتِهِ أَنَّ هَذَا مُخْتَصٌّ بِالْأَذَانِ"
+# # word = "عَنْ سَعِيدِ بْنِ الْمُسَيِّبِ"
+# # word = "بُرًّا"
+# word = " يَأْخُذُونَ بَعْضَ مَا تَيَسَّرَ لَهُمْ أَخْذُهُ فَيَخْتَلِسُونَهُ وَيَجْعَلُونَهُ تَحْتَهُمْ حَتَّى إذَا رَجَعُوا إلَى بُيُوتِهِمْ أَخْرَجُوهُ     "
+# # word = "بُيُوتِهِمْ"
+# # # for i,c in enumerate(word):
+# # #     print(i,"- ",c)
+# text_without_diacritics, diacritic_list = remove_diacritics(word)
+# print_text_to_diacritic_mapping(text_without_diacritics,diacritic_list)
+# print("Text without diacritics : ", text_without_diacritics)
+s = diacritic_to_str("ِ")
+print(diacritic_to_str(s))

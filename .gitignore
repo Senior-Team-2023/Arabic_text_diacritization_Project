@@ -1,6 +1,6 @@
 # Ignore binary files
 *.bin
-
+*.npy
 # PDF
 .pdf
 # Byte-compiled / optimized / DLL files

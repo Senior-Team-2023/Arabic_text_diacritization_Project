@@ -18,7 +18,7 @@ def filter_data(data: str) -> str:
     # remove all numbers
     data = re.sub(r"\d+", "", data)
     # regex to remove all special characters
-    data = re.sub(r"[][//,;\?؟()$:\-{}_*؛،.:«»]", "", data)
+    data = re.sub(r"[][//,;\?؟()$:\-{}_*؛،.:«»`–\"~!]", "", data)
     # remove all english letters
     data = re.sub(r"[a-zA-Z]", "", data)
     # Substituting multiple spaces with single space
@@ -30,7 +30,8 @@ def filter_data(data: str) -> str:
 
 def split_data_to_sentences(data: str) -> list:
     # Split data into sentences using punctuation marks and newlines as delimiters
-    sentences = re.split(r"[.?!\n]", data)
+    # sentences = re.split(r"[.?!\n]", data)
+    sentences = re.split(r"[\n]", data)
     # Remove empty sentences
     sentences = [sentence for sentence in sentences if sentence.strip()]
     return sentences
@@ -58,12 +59,13 @@ def concatinate_word_char_embeddings(text_without_diacritics, diacritic_list, em
             word_vector = embedding_model.vector(word)
             diacritic_list_2.append(diacritic_list[i])
         except:
+            # print(f"Word: \"{word}\" not found in the vocabulary")
             # char_vector = character_encoding.CharToOneHOt(char)
             # concatinated_vector.append(np.concatenate((word_vector, char_vector), axis=None))
             continue
         for char in word:
             char_vector = character_encoding.CharToOneHOt(char)
-            concatinated_vector.append(np.concatenate((word_vector, char_vector), axis=None))
+            concatinated_vector.append(np.concatenate((char_vector , word_vector), axis=None))
 
     return concatinated_vector, diacritic_list_2
 
