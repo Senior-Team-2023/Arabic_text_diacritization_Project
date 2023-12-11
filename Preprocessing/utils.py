@@ -1,6 +1,7 @@
 import re
 import numpy as np
-from Preprocessing import character_encoding
+# from Preprocessing import character_encoding
+import character_encoding
 # from character_tokenizer import CharacterTokenizer
 # from nltk.tokenize.stanford_segmenter import StanfordSegmenter
 
@@ -68,4 +69,3 @@ def concatinate_word_char_embeddings(text_without_diacritics, diacritic_list, em
             concatinated_vector.append(np.concatenate((word_vector, char_vector), axis=None))
 
     return concatinated_vector, diacritic_list_2
-

@@ -10,8 +10,8 @@ class FastTextEmbedding:
 
     def train(self):
         # Split the documents into words
-        tokenized_docs = [doc.split() for doc in self.data]
-
+        # split each document into list of characters
+        tokenized_docs = [list(doc) for doc in self.data]
         # Train the FastText model
         self.model = FastText(tokenized_docs, min_count=1, vector_size=self.vector_size)
 
