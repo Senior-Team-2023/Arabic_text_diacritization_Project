@@ -2,7 +2,6 @@
 KASRA = "\u0650"
 DAMMA = "\u064F"
 FATHA = "\u064E"
-FATHA2 = '`'
 KASRATAN = "\u064D"
 DAMMATAN = "\u064C"
 FATHATAN = "\u064B"
@@ -17,7 +16,7 @@ SHADDA_KASRATAN =  KASRATAN + SHADDA
 
 # Define a list of diacritics
 # Number of Classes = diacritics + "" (No diacritic)
-DIACRITICS = [DAMMA, FATHA, FATHA2,  KASRA, DAMMATAN, FATHATAN, KASRATAN, SHADDA_DAMMA, SHADDA_FATHA,  SHADDA_KASRA, SHADDA_DAMMATAN, SHADDA_FATHATAN, SHADDA_KASRATAN, SHADDA, SUKUN, ""]
+DIACRITICS = [DAMMA, FATHA,  KASRA, DAMMATAN, FATHATAN, KASRATAN, SHADDA_DAMMA, SHADDA_FATHA,  SHADDA_KASRA, SHADDA_DAMMATAN, SHADDA_FATHATAN, SHADDA_KASRATAN, SHADDA, SUKUN, ""]
 ARABIC_ALPHABIT = "اآإءبتثجحخدذرزسشصضطظعغفقكلمنهويأئؤىة"
 
 # This function is responsible for mapping diacritics to their corresponding strings
@@ -29,8 +28,6 @@ def diacritic_to_str(diacritic):
     elif diacritic == DAMMA:
         diacritic = "DAMMA"
     elif diacritic == FATHA:
-        diacritic = "FATHA"
-    elif diacritic == FATHA2:
         diacritic = "FATHA"
     elif diacritic == KASRATAN:
         diacritic = "KASRATAN"

@@ -50,7 +50,7 @@ def split_data_to_words(data: str) -> list:
     words = re.split(r" ", data)
     return words
 
-def concatinate_word_char_embeddings(text_without_diacritics, diacritic_list, embedding_model):
+def concatinate_word_char_embeddings(text_without_diacritics, diacritic_list, embedding_model, character_embedding_model):
     concatinated_vector = []
     diacritic_list_2 = []
     for i, word in enumerate(text_without_diacritics):
@@ -64,8 +64,12 @@ def concatinate_word_char_embeddings(text_without_diacritics, diacritic_list, em
             # concatinated_vector.append(np.concatenate((word_vector, char_vector), axis=None))
             continue
         for char in word:
-            char_vector = character_encoding.CharToOneHOt(char)
+            if character_embedding_model is None:
+                char_vector = character_encoding.CharToOneHOt(char)
+            else:
+                char_vector = character_embedding_model.vector(char)
             concatinated_vector.append(np.concatenate((word_vector, char_vector), axis=None))
+            # concatinated_vector.append(char_vector)
 
     return concatinated_vector, diacritic_list_2
 
