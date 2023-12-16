@@ -13,11 +13,11 @@ SHADDA_KASRA =  KASRA + SHADDA
 SHADDA_DAMMATAN =  DAMMATAN + SHADDA
 SHADDA_FATHATAN =  FATHATAN + SHADDA 
 SHADDA_KASRATAN =  KASRATAN + SHADDA  
-
+EMPTY = ""
 # Define a list of diacritics
 # Number of Classes = diacritics + "" (No diacritic)
-DIACRITICS = [DAMMA, FATHA,  KASRA, DAMMATAN, FATHATAN, KASRATAN, SHADDA_DAMMA, SHADDA_FATHA,  SHADDA_KASRA, SHADDA_DAMMATAN, SHADDA_FATHATAN, SHADDA_KASRATAN, SHADDA, SUKUN, ""]
-ARABIC_ALPHABIT = "اآإءبتثجحخدذرزسشصضطظعغفقكلمنهويأئؤىة"
+DIACRITICS = [DAMMA, FATHA,  KASRA, DAMMATAN, FATHATAN, KASRATAN, SHADDA_DAMMA, SHADDA_FATHA,  SHADDA_KASRA, SHADDA_DAMMATAN, SHADDA_FATHATAN, SHADDA_KASRATAN, SHADDA, SUKUN, EMPTY]
+ARABIC_ALPHABIT = "اأآإئءبتةثجحخدذرزسشصضطظعغفقكلمنهوؤيى"
 
 # This function is responsible for mapping diacritics to their corresponding strings
 def diacritic_to_str(diacritic):
@@ -93,32 +93,52 @@ def PrepareData(data):
 # This function is responsible for separating diacritics from Arabic text for the hole TRAINING data
 def RemoveDiacriticFromSentence(data):
     text_without_diacritics = []
+    diacritics_list = []
     for i, sentence in enumerate(data):
         if sentence == "" or sentence.isspace(): continue
-        text, _ = remove_diacritics(sentence,True)
+        text, diacritics = remove_diacritics(sentence,True)
         text_without_diacritics.append(text)
-    return text_without_diacritics
+        diacritics_list.append(diacritics)
+    return text_without_diacritics, diacritics_list
 
 # This function returns one hot encoding for a given arabic character
 def CharToOneHOt(char):
     # Check if the given character is in the Arabic alphabet
-    if char not in ARABIC_ALPHABIT:
+    if char not in ARABIC_ALPHABIT and char != ' '  and char != '\n':
         raise ValueError("Invalid Arabic character : \'" + char + "\'")
 
     # Create a dictionary mapping each character to its one-hot encoding
-    one_hot_encoding = [1 if c == char else 0 for c in ARABIC_ALPHABIT]
+    one_hot_encoding = [1 if c == char else 0 for c in ARABIC_ALPHABIT + ' ' + '\n']
 
     return one_hot_encoding
 
+def remove_spaces(text, diacritic_list):
+    for i in range(len(text)):
+        if text[i] == " ":
+            diacritic_list = diacritic_list[:i] + diacritic_list[i+1:]
+    return text, diacritic_list
+    
+
+
+def restore_diacritics(sentence, diacritic_list):
+    text = ""
+    for i in range(len(sentence)):
+        text += sentence[i]
+        if sentence[i] != " " and len(diacritic_list[i]):
+            for diacritic in diacritic_list[i]:
+                text += diacritic
+    return text
 
 # This function is responsible for separating diacritics from Arabic text
 # It returns the text without diacritics and a list of the corresponding diacritics
 # Example :
 # Input : "اللّهِ"
 # Output : "الله" , ["", "", SHADDA, KASRA]      
-def remove_diacritics(text, is_sentence = False):
+def remove_diacritics(str, is_sentence = False):
     diacritic_list = []
     text_without_diacritics = ""
+    # copy the string to a new variable
+    text = str
     if not is_sentence:
         text = " " + text + " " # Add padding 
     for i in range(len(text)):
@@ -181,12 +201,12 @@ def remove_diacritics(text, is_sentence = False):
 # # word = "نَقَلَ بَعْضُهُمْ أَنَّ الْقُهُسْتَانِيَّ كَتَبَ عَلَى هَامِشِ نُسْخَتِهِ أَنَّ هَذَا مُخْتَصٌّ بِالْأَذَانِ"
 # # word = "عَنْ سَعِيدِ بْنِ الْمُسَيِّبِ"
 # # word = "بُرًّا"
-# word = " يَأْخُذُونَ بَعْضَ مَا تَيَسَّرَ لَهُمْ أَخْذُهُ فَيَخْتَلِسُونَهُ وَيَجْعَلُونَهُ تَحْتَهُمْ حَتَّى إذَا رَجَعُوا إلَى بُيُوتِهِمْ أَخْرَجُوهُ     "
+# word = "يَأْخُذُونَ بَعْضَ مَا تَيَسَّرَ لَهُمْ أَخْذُهُ فَيَخْتَلِسُونَهُ وَيَجْعَلُونَهُ تَحْتَهُمْ حَتَّى إذَا رَجَعُوا إلَى بُيُوتِهِمْ أَخْرَجُوهُ"
 # # word = "بُيُوتِهِمْ"
 # # # for i,c in enumerate(word):
 # # #     print(i,"- ",c)
 # text_without_diacritics, diacritic_list = remove_diacritics(word)
 # print_text_to_diacritic_mapping(text_without_diacritics,diacritic_list)
 # print("Text without diacritics : ", text_without_diacritics)
-s = diacritic_to_str("ِ")
-print(diacritic_to_str(s))
+# s = diacritic_to_str("ِ")
+# print(diacritic_to_str(s))

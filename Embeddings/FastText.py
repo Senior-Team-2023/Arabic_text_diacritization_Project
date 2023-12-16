@@ -14,7 +14,8 @@ class FastTextEmbedding:
     def train(self):
         # Split the documents into words
         if self.is_character == False:
-            tokenized_docs = [doc.split() for doc in self.data]
+            # tokenized_docs = [doc.split() for doc in self.data]
+            tokenized_docs = [split_data_to_words(doc) for doc in self.data]
         else:
             tokenized_docs = [char_tokenizer(doc) for doc in self.data]
         # Train the FastText model
@@ -53,6 +54,10 @@ def char_tokenizer(data: str):
     characters = list(re.sub(r" ", "", data))
     return characters
 
+def split_data_to_words(data: str) -> list:
+    words = re.split(r"[^\S\n]+", data)
+    return words
+
 # docs = ['كان يوم سعيد',
 #         'ماشاءهللا عمل جيد',
 #         'ممتاز',
@@ -62,7 +67,7 @@ def char_tokenizer(data: str):
 #         'ليس جيدا',
 #         'كان عمل متعب']
 
-# fastText = FastTextEmbedding(docs, vector_size = 5, is_character = True)
+# fastText = FastTextEmbedding(docs, vector_size = 5, is_character = False)
 # fastText.train()
 
 # for word in fastText.Word_embeddings().key_to_index:
