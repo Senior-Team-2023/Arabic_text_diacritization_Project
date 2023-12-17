@@ -88,7 +88,7 @@ def concatinate_word_char_embeddings(
     return concatinated_vector, diacritic_list_2
 
 
-def padding(sequences):
+def padding(sequences, max_length=100):
     # return tf.keras.preprocessing.sequence.pad_sequences(sequences)
     return pad_sequence([torch.tensor(seq) for seq in sequences], batch_first=True)
 
