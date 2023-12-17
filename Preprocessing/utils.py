@@ -23,7 +23,7 @@ def filter_data(data: str) -> str:
     # remove all english letters
     data = re.sub(r"[a-zA-Z]", "", data)
     # Substituting multiple spaces with single space
-    data = re.sub(r"([ \r\t\f])+", " ", data, flags=re.I)
+    data = re.sub(r"([^\S\n])+", " ", data, flags=re.I)
     return data
 
 
@@ -48,16 +48,17 @@ def char_tokenizer(data: str):
     return characters
 
 def split_data_to_words(data: str) -> list:
-    words = re.split(r" ", data)
+    words = re.split(r"\s+", data)
     return words
 
-def concatinate_word_char_embeddings(text_without_diacritics, diacritic_list, embedding_model):
+def concatinate_word_char_embeddings(text_without_diacritics, diacritic_list, embedding_model, character_embedding_model):
     concatinated_vector = []
     diacritic_list_2 = []
     for i, word in enumerate(text_without_diacritics):
         # if word does not have corresponding embedding don't add it to the training set and remove its corresponding diacritic list
         try:
-            word_vector = embedding_model.vector(word)
+            if embedding_model  is not None:
+                word_vector = embedding_model.vector(word)
             diacritic_list_2.append(diacritic_list[i])
         except:
             # print(f"Word: \"{word}\" not found in the vocabulary")
@@ -65,7 +66,24 @@ def concatinate_word_char_embeddings(text_without_diacritics, diacritic_list, em
             # concatinated_vector.append(np.concatenate((word_vector, char_vector), axis=None))
             continue
         for char in word:
-            char_vector = character_encoding.CharToOneHOt(char)
-            concatinated_vector.append(np.concatenate((word_vector, char_vector), axis=None))
+            if character_embedding_model is None:
+                char_vector = character_encoding.CharToOneHOt(char)
+            else:
+                char_vector = character_embedding_model.vector(char)
+            
+            if embedding_model is not None:
+                concatinated_vector.append(np.concatenate((word_vector, char_vector), axis=None))
+            else:
+                concatinated_vector.append(char_vector)
 
     return concatinated_vector, diacritic_list_2
+
+
+def diacritic_error_rate(text , predicted_text):
+    diacritic_error = 0
+    for i in range(len(text)):
+        if text[i] in character_encoding.DIACRITICS:
+            if text[i] != predicted_text[i]:
+                diacritic_error += 1
+    der = diacritic_error / len(text)
+    return der * 100

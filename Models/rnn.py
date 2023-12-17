@@ -1,13 +1,34 @@
 from keras.models import Sequential
 from keras.layers import Dense, SimpleRNN
+from keras import Input
 
 class RNN:
-    def __init__(self, input_shape, output_shape):
+    def __init__(self, input_shape, output_shape, num_lstm_layers = 5, lstm_units = 128):
         self.model = Sequential()
-        self.model.add(SimpleRNN(units=64, input_shape=input_shape))
-        self.model.add(Dense(64, activation='relu'))
+        
+        self.model.add(Input(shape=input_shape))
+
+        # Add the first LSTM layer
+        self.model.add(SimpleRNN(units=lstm_units, return_sequences=True))
+        
+        # Add additional LSTM layers
+        for _ in range(num_lstm_layers - 1):
+            self.model.add(SimpleRNN(units=lstm_units, return_sequences=True))
+
+        # Add the last LSTM layer without return_sequences
+        self.model.add(SimpleRNN(units=lstm_units))
+        
+        # # Add a Dense layer after the last LSTM layer
+        # self.model.add(Dense(32, activation='relu'))
+        
+        # Output layer
         self.model.add(Dense(output_shape, activation='softmax'))
+        
+        # Compile the model
         self.model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+    def summary(self):
+        self.model.summary()
 
     def train(self, X_train, y_train, epochs=10, batch_size=32):
         self.model.fit(X_train, y_train, epochs=epochs, batch_size=batch_size)

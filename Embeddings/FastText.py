@@ -1,19 +1,25 @@
 from gensim.models import FastText
 import os
+import re
+
 
 class FastTextEmbedding:
-    def __init__(self, data, vector_size):
+    def __init__(self, data, vector_size, is_character = False):
         self.data = data
         self.vector_size = vector_size
         self.model = None
         self.word_embeddings = None
+        self.is_character = is_character
 
     def train(self):
         # Split the documents into words
-        # split each document into list of characters
-        tokenized_docs = [list(doc) for doc in self.data]
+        if self.is_character == False:
+            # tokenized_docs = [doc.split() for doc in self.data]
+            tokenized_docs = [split_data_to_words(doc) for doc in self.data]
+        else:
+            tokenized_docs = [char_tokenizer(doc) for doc in self.data]
         # Train the FastText model
-        self.model = FastText(tokenized_docs, min_count=1, vector_size=self.vector_size)
+        self.model = FastText(tokenized_docs, min_count=1, vector_size = self.vector_size)
 
         # Get the word embeddings
         self.word_embeddings = self.model.wv
@@ -43,7 +49,14 @@ class FastTextEmbedding:
     def is_model_saved(self, file_path):
         # Check if the model file already exists
         return os.path.exists(file_path)
+    
+def char_tokenizer(data: str):
+    characters = list(re.sub(r" ", "", data))
+    return characters
 
+def split_data_to_words(data: str) -> list:
+    words = re.split(r"[^\S\n]+", data)
+    return words
 
 # docs = ['كان يوم سعيد',
 #         'ماشاءهللا عمل جيد',
@@ -54,9 +67,12 @@ class FastTextEmbedding:
 #         'ليس جيدا',
 #         'كان عمل متعب']
 
-# fastText = FastTextEmbedding(docs, vector_size = 5)
+# fastText = FastTextEmbedding(docs, vector_size = 5, is_character = False)
 # fastText.train()
 
 # for word in fastText.Word_embeddings().key_to_index:
 #     vector = fastText.vector(word)
 #     print(f"Word: {word}, Vector: {vector}")
+
+
+
