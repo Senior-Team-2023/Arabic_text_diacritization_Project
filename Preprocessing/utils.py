@@ -1,4 +1,5 @@
 import re
+import tensorflow as tf
 import numpy as np
 from Preprocessing import character_encoding
 # from character_tokenizer import CharacterTokenizer
@@ -76,6 +77,12 @@ def concatinate_word_char_embeddings(text_without_diacritics, diacritic_list, em
                 concatinated_vector.append(char_vector)
 
     return concatinated_vector, diacritic_list_2
+
+def padding(sequences):
+    return tf.keras.preprocessing.sequence.pad_sequences(sequences)
+
+def get_max_len(sequences):
+    return max([len(seq) for seq in sequences])
 
 
 def diacritic_error_rate(text , predicted_text):

@@ -55,6 +55,9 @@ def diacritic_to_str(diacritic):
         diacritic = " "
     return diacritic
 
+def char_to_index(char):
+    return DIACRITICS.index(char)
+
 # This function is responsible for printing the mapping between Arabic text and diacritics
 # For result debbugging purposes
 def print_text_to_diacritic_mapping(text_without_diacritics, diacritic_list, is_sentence = False):
