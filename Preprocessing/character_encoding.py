@@ -79,6 +79,19 @@ def diacritic_to_str(diacritic):
 def char_to_index(char):
     return DIACRITICS.index(char)
 
+def oneHot_to_sentence(list_of_oneHot):
+    sentence = ""
+    l = ARABIC_ALPHABIT + " " + "\n"
+    for oneHot in list_of_oneHot:
+        sentence += l.index(oneHot)
+    return sentence
+
+
+def index_to_char(indeces_list):
+    char_list = []
+    for index in indeces_list:
+        char_list.append(DIACRITICS[index])
+    return char_list
 
 # This function is responsible for printing the mapping between Arabic text and diacritics
 # For result debbugging purposes
