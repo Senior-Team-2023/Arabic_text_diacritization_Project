@@ -20,6 +20,7 @@ EMPTY = ""
 # Define a list of diacritics
 # Number of Classes = diacritics + "" (No diacritic)
 DIACRITICS = [
+    EMPTY,
     DAMMA,
     FATHA,
     KASRA,
@@ -34,11 +35,11 @@ DIACRITICS = [
     SHADDA_KASRATAN,
     SHADDA,
     SUKUN,
-    EMPTY,
 ]
-ARABIC_ALPHABIT = "اأآإئءبتةثجحخدذرزسشصضطظعغفقكلمنهوؤيى"
+ARABIC_ALPHABIT = " اأآإئءبتةثجحخدذرزسشصضطظعغفقكلمنهوؤيى"
 
-
+# print("ARABIC_ALPHABIT[0] = ", ARABIC_ALPHABIT[0])
+# print("DIACRITICS[0] = ", DIACRITICS[0])
 # This function is responsible for mapping diacritics to their corresponding strings
 def diacritic_to_str(diacritic):
     if diacritic == SHADDA:
@@ -81,7 +82,7 @@ def char_to_index(char):
 
 def oneHot_to_sentence(list_of_oneHot):
     sentence = ""
-    l = ARABIC_ALPHABIT + " " + "\n"
+    l = ARABIC_ALPHABIT + "\n"
     for oneHot in list_of_oneHot:
         sentence += l.index(oneHot)
     return sentence
@@ -156,7 +157,7 @@ def CharToOneHOt(char):
         raise ValueError("Invalid Arabic character : '" + char + "'")
 
     # Create a dictionary mapping each character to its one-hot encoding
-    one_hot_encoding = [1 if c == char else 0 for c in ARABIC_ALPHABIT + " " + "\n"]
+    one_hot_encoding = [1 if c == char else 0 for c in ARABIC_ALPHABIT + "\n"]
 
     return one_hot_encoding
 
@@ -190,18 +191,32 @@ def getDiacriticVector(diacritics_list):
 
     return np.array(vec)
 
+def oneHot_to_sentence(list_of_oneHot):
+    sentence = ""
+    l = ARABIC_ALPHABIT + "\n"
+    for oneHot in list_of_oneHot:
+        sentence += l[oneHot.argmax()]
+    return sentence
+
+def oneHot_to_diacritic(list_of_oneHot):
+    sentence = []
+    l = DIACRITICS
+    for oneHot in list_of_oneHot:
+        sentence.append(l[oneHot.argmax()])
+    return sentence
 
 def padding(sequence, vec_size, max_length=100):
     # return tf.keras.preprocessing.sequence.pad_sequences(sequences)
     # return pad_sequence([torch.tensor(seq) for seq in sequences], batch_first=True)
     var1 = np.zeros((max_length, vec_size))
+    original_length = sequence.shape[0]
     if sequence.shape[0] < max_length:
         # sequences = sequences[:max_length]
-        var1[: sequence.shape[0], :] = sequence
+        var1[: original_length, :] = sequence
         sequence = var1
     else:
         sequence = sequence[:max_length, :]
-    return sequence
+    return sequence, original_length
 
 
 def remove_spaces(text, diacritic_list):
@@ -290,6 +305,12 @@ def remove_diacritics(str, is_sentence=False):
 
     return text_without_diacritics, diacritic_list
 
+def diacritics_error_rate(original_diacritics, predicted_diacritics):
+    error = 0
+    for i in range(len(original_diacritics)):
+        if original_diacritics[i] != predicted_diacritics[i]:
+            error += 1
+    return error / len(original_diacritics) * 100, error
 
 #################### Test the function with an example word ####################
 # # word = "نَقَلَ بَعْضُهُمْ أَنَّ الْقُهُسْتَانِيَّ كَتَبَ عَلَى هَامِشِ نُسْخَتِهِ أَنَّ هَذَا مُخْتَصٌّ بِالْأَذَانِ"
