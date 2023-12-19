@@ -15,6 +15,9 @@ def read_data(path: str) -> str:
         # train_set = f.read().splitlines()
         return f.read()
 
+def save_data(path: str, data: str):
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(data)
 
 # filter data takes a list of strings and removes unwanted patterns
 def filter_data(data: str) -> str:
@@ -31,8 +34,6 @@ def filter_data(data: str) -> str:
 
 
 # split data into sentences
-
-
 def split_data_to_sentences(data: str) -> list:
     # Split data into sentences using punctuation marks and newlines as delimiters
     # sentences = re.split(r"[.?!\n]", data)

@@ -1,3 +1,6 @@
+# Ignore SavedModel folder
+SavedModels/
+# dataset/
 # Ignore binary files
 *.bin
 *.npy
