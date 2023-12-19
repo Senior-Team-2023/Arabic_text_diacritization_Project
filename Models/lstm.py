@@ -5,23 +5,23 @@ from keras import Input
 
 
 class LSTM_Model:
-    def __init__(self, input_shape, output_shape, num_lstm_layers = 5, lstm_units = 128):
+    def __init__(self, input_shape, output_shape, num_lstm_layers = 5, hidden_size = 128):
         self.model = Sequential()
         
         self.model.add(Input(shape=input_shape))
 
         # Add the first LSTM layer
-        self.model.add(LSTM(units=lstm_units, return_sequences=True))
+        self.model.add(LSTM(units=hidden_size, return_sequences=True))
         
         # Add additional LSTM layers
         for _ in range(num_lstm_layers - 1):
-            self.model.add(LSTM(units=lstm_units, return_sequences=True))
+            self.model.add(LSTM(units=hidden_size, return_sequences=True))
 
         # Add the last LSTM layer without return_sequences
-        self.model.add(LSTM(units=lstm_units))
+        self.model.add(LSTM(units=hidden_size))
         
-        # Add a Dense layer after the last LSTM layer
-        self.model.add(Dense(32, activation='relu'))
+        # # Add a Dense layer after the last LSTM layer
+        # self.model.add(Dense(32, activation='relu'))
         
         # Output layer
         self.model.add(Dense(output_shape, activation='softmax'))

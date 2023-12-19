@@ -1,4 +1,7 @@
 # Define Diacritics
+import numpy as np
+
+
 KASRA = "\u0650"
 DAMMA = "\u064F"
 FATHA = "\u064E"
@@ -7,18 +10,36 @@ DAMMATAN = "\u064C"
 FATHATAN = "\u064B"
 SUKUN = "\u0652"
 SHADDA = "\u0651"
-SHADDA_DAMMA =  DAMMA + SHADDA 
-SHADDA_FATHA =  FATHA + SHADDA 
-SHADDA_KASRA =  KASRA + SHADDA 
-SHADDA_DAMMATAN =  DAMMATAN + SHADDA
-SHADDA_FATHATAN =  FATHATAN + SHADDA 
-SHADDA_KASRATAN =  KASRATAN + SHADDA  
+SHADDA_DAMMA = DAMMA + SHADDA
+SHADDA_FATHA = FATHA + SHADDA
+SHADDA_KASRA = KASRA + SHADDA
+SHADDA_DAMMATAN = DAMMATAN + SHADDA
+SHADDA_FATHATAN = FATHATAN + SHADDA
+SHADDA_KASRATAN = KASRATAN + SHADDA
 EMPTY = ""
 # Define a list of diacritics
 # Number of Classes = diacritics + "" (No diacritic)
-DIACRITICS = [DAMMA, FATHA,  KASRA, DAMMATAN, FATHATAN, KASRATAN, SHADDA_DAMMA, SHADDA_FATHA,  SHADDA_KASRA, SHADDA_DAMMATAN, SHADDA_FATHATAN, SHADDA_KASRATAN, SHADDA, SUKUN, EMPTY]
-ARABIC_ALPHABIT = "اأآإئءبتةثجحخدذرزسشصضطظعغفقكلمنهوؤيى"
+DIACRITICS = [
+    EMPTY,
+    DAMMA,
+    FATHA,
+    KASRA,
+    DAMMATAN,
+    FATHATAN,
+    KASRATAN,
+    SHADDA_DAMMA,
+    SHADDA_FATHA,
+    SHADDA_KASRA,
+    SHADDA_DAMMATAN,
+    SHADDA_FATHATAN,
+    SHADDA_KASRATAN,
+    SHADDA,
+    SUKUN,
+]
+ARABIC_ALPHABIT = " اأآإئءبتةثجحخدذرزسشصضطظعغفقكلمنهوؤيى"
 
+# print("ARABIC_ALPHABIT[0] = ", ARABIC_ALPHABIT[0])
+# print("DIACRITICS[0] = ", DIACRITICS[0])
 # This function is responsible for mapping diacritics to their corresponding strings
 def diacritic_to_str(diacritic):
     if diacritic == SHADDA:
@@ -55,19 +76,44 @@ def diacritic_to_str(diacritic):
         diacritic = " "
     return diacritic
 
+
+def char_to_index(char):
+    return DIACRITICS.index(char)
+
+def oneHot_to_sentence(list_of_oneHot):
+    sentence = ""
+    l = ARABIC_ALPHABIT + "\n"
+    for oneHot in list_of_oneHot:
+        sentence += l.index(oneHot)
+    return sentence
+
+
+def index_to_char(indeces_list):
+    char_list = []
+    for index in indeces_list:
+        char_list.append(DIACRITICS[index])
+    return char_list
+
 # This function is responsible for printing the mapping between Arabic text and diacritics
 # For result debbugging purposes
-def print_text_to_diacritic_mapping(text_without_diacritics, diacritic_list, is_sentence = False):
+def print_text_to_diacritic_mapping(
+    text_without_diacritics, diacritic_list, is_sentence=False
+):
     j = 0
     for i in range(len(text_without_diacritics)):
-        if is_sentence == True and (text_without_diacritics[i] == " " or text_without_diacritics[i] == '\n' or text_without_diacritics[i] == ""):
-            print(text_without_diacritics[i] ,":", "")
+        if is_sentence == True and (
+            text_without_diacritics[i] == " "
+            or text_without_diacritics[i] == "\n"
+            or text_without_diacritics[i] == ""
+        ):
+            print(text_without_diacritics[i], ":", "")
         else:
-            print(text_without_diacritics[i] ,":", diacritic_to_str(diacritic_list[j]))
-            j+=1
+            print(text_without_diacritics[i], ":", diacritic_to_str(diacritic_list[j]))
+            j += 1
+
 
 # This function is responsible for mapping diacritics to their corresponding strings
-# For result visualization purposes 
+# For result visualization purposes
 # Example :
 # Input : ["", "", ّ, ِ]
 # Output : ["", "", "SHADDA", "KASRA"]
@@ -76,6 +122,7 @@ def map_text_to_diacritic(diacritic_list):
     for i in range(len(diacritic_list)):
         mapped_list.append(diacritic_to_str(diacritic_list[i]))
     return mapped_list
+
 
 # This function is responsible for separating diacritics from Arabic text for the hole TRAINING data
 def PrepareData(data):
@@ -95,29 +142,88 @@ def RemoveDiacriticFromSentence(data):
     text_without_diacritics = []
     diacritics_list = []
     for i, sentence in enumerate(data):
-        if sentence == "" or sentence.isspace(): continue
-        text, diacritics = remove_diacritics(sentence,True)
+        if sentence == "" or sentence.isspace():
+            continue
+        text, diacritics = remove_diacritics(sentence, True)
         text_without_diacritics.append(text)
         diacritics_list.append(diacritics)
     return text_without_diacritics, diacritics_list
 
+
 # This function returns one hot encoding for a given arabic character
 def CharToOneHOt(char):
     # Check if the given character is in the Arabic alphabet
-    if char not in ARABIC_ALPHABIT and char != ' '  and char != '\n':
-        raise ValueError("Invalid Arabic character : \'" + char + "\'")
+    if char not in ARABIC_ALPHABIT and char != " " and char != "\n":
+        raise ValueError("Invalid Arabic character : '" + char + "'")
 
     # Create a dictionary mapping each character to its one-hot encoding
-    one_hot_encoding = [1 if c == char else 0 for c in ARABIC_ALPHABIT + ' ' + '\n']
+    one_hot_encoding = [1 if c == char else 0 for c in ARABIC_ALPHABIT + "\n"]
 
     return one_hot_encoding
+
+
+def diacriticToOneHOt(diacritic):
+    # Check if the given character is in the Arabic alphabet
+    if diacritic not in DIACRITICS:
+        raise ValueError("Invalid diacritic : '" + diacritic + "'")
+
+    # Create a dictionary mapping each character to its one-hot encoding
+    one_hot_encoding = [1 if c == diacritic else 0 for c in DIACRITICS]
+    return one_hot_encoding
+
+
+def getSentenceVector(sentence):
+    # Check if the given character is in the Arabic alphabet
+    vec = []
+    for char in sentence:
+        one_hot_encoding = CharToOneHOt(char)
+        vec.append(one_hot_encoding)
+
+    return np.array(vec)
+
+
+def getDiacriticVector(diacritics_list):
+    # Check if the given character is in the Arabic alphabet
+    vec = []
+    for diacritic in diacritics_list:
+        one_hot_encoding = diacriticToOneHOt(diacritic)
+        vec.append(one_hot_encoding)
+
+    return np.array(vec)
+
+def oneHot_to_sentence(list_of_oneHot):
+    sentence = ""
+    l = ARABIC_ALPHABIT + "\n"
+    for oneHot in list_of_oneHot:
+        sentence += l[oneHot.argmax()]
+    return sentence
+
+def oneHot_to_diacritic(list_of_oneHot):
+    sentence = []
+    l = DIACRITICS
+    for oneHot in list_of_oneHot:
+        sentence.append(l[oneHot.argmax()])
+    return sentence
+
+def padding(sequence, vec_size, max_length=100):
+    # return tf.keras.preprocessing.sequence.pad_sequences(sequences)
+    # return pad_sequence([torch.tensor(seq) for seq in sequences], batch_first=True)
+    var1 = np.zeros((max_length, vec_size))
+    original_length = sequence.shape[0]
+    if sequence.shape[0] < max_length:
+        # sequences = sequences[:max_length]
+        var1[: original_length, :] = sequence
+        sequence = var1
+    else:
+        sequence = sequence[:max_length, :]
+    return sequence, original_length
+
 
 def remove_spaces(text, diacritic_list):
     for i in range(len(text)):
         if text[i] == " ":
-            diacritic_list = diacritic_list[:i] + diacritic_list[i+1:]
+            diacritic_list = diacritic_list[:i] + diacritic_list[i + 1 :]
     return text, diacritic_list
-    
 
 
 def restore_diacritics(sentence, diacritic_list):
@@ -129,27 +235,28 @@ def restore_diacritics(sentence, diacritic_list):
                 text += diacritic
     return text
 
+
 # This function is responsible for separating diacritics from Arabic text
 # It returns the text without diacritics and a list of the corresponding diacritics
 # Example :
 # Input : "اللّهِ"
-# Output : "الله" , ["", "", SHADDA, KASRA]      
-def remove_diacritics(str, is_sentence = False):
+# Output : "الله" , ["", "", SHADDA, KASRA]
+def remove_diacritics(str, is_sentence=False):
     diacritic_list = []
     text_without_diacritics = ""
     # copy the string to a new variable
     text = str
     if not is_sentence:
-        text = " " + text + " " # Add padding 
+        text = " " + text + " "  # Add padding
     for i in range(len(text)):
         c = text[i]
-        
-        if not is_sentence and (c == " " or c == '\n' or c == ""):
+
+        if not is_sentence and (c == " " or c == "\n" or c == ""):
             continue
         # Check if the character is a diacritic
         if c in DIACRITICS:
             # Detect ... SHADDA
-            if i + 1 < len(text) and text[i+1] == SHADDA:
+            if i + 1 < len(text) and text[i + 1] == SHADDA:
                 if c == DAMMA:
                     diacritic_list.append(SHADDA_DAMMA)
                 elif c == FATHA:
@@ -164,39 +271,47 @@ def remove_diacritics(str, is_sentence = False):
                     diacritic_list.append(SHADDA_FATHATAN)
             # Detect SHADDA ...
             elif i + 1 < len(text) and c == SHADDA:
-                if text[i+1] == DAMMA:
+                if text[i + 1] == DAMMA:
                     diacritic_list.append(SHADDA_DAMMA)
-                elif text[i+1] == FATHA:
+                elif text[i + 1] == FATHA:
                     diacritic_list.append(SHADDA_FATHA)
-                elif text[i+1] == KASRA:
+                elif text[i + 1] == KASRA:
                     diacritic_list.append(SHADDA_KASRA)
-                elif text[i+1] == DAMMATAN:
+                elif text[i + 1] == DAMMATAN:
                     diacritic_list.append(SHADDA_DAMMATAN)
-                elif text[i+1] == KASRATAN:
+                elif text[i + 1] == KASRATAN:
                     diacritic_list.append(SHADDA_KASRATAN)
-                elif text[i+1] == FATHATAN:
+                elif text[i + 1] == FATHATAN:
                     diacritic_list.append(SHADDA_FATHATAN)
-                else: diacritic_list.append(SHADDA)
-            elif text[i-1] != SHADDA:
+                else:
+                    diacritic_list.append(SHADDA)
+            elif text[i - 1] != SHADDA:
                 diacritic_list.append(c)
-        else: 
+        else:
             # Check if the next character is a diacritic or shadda -> because of SHADDA ... and ... SHADDA
-            if (i+1 < len(text) and text[i+1] not in DIACRITICS) or (i+1 == len(text)):
+            if (i + 1 < len(text) and text[i + 1] not in DIACRITICS) or (
+                i + 1 == len(text)
+            ):
                 # Add an empty string to the diacritic list
                 diacritic_list.append("")
-                
+
             text_without_diacritics += c
 
     # print_text_to_diacritic_mapping(text_without_diacritics,diacritic_list)
-            
-    assert (len(text_without_diacritics) == len(diacritic_list)), f"Error : Text : {text} Len ({len(text_without_diacritics)}) != Len diacritic ({len(diacritic_list)}) list have different sizes, "
+
+    assert len(text_without_diacritics) == len(
+        diacritic_list
+    ), f"Error : Text : {text} Len ({len(text_without_diacritics)}) != Len diacritic ({len(diacritic_list)}) list have different sizes, "
 
     return text_without_diacritics, diacritic_list
 
+def diacritics_error_rate(original_diacritics, predicted_diacritics):
+    error = 0
+    for i in range(len(original_diacritics)):
+        if original_diacritics[i] != predicted_diacritics[i]:
+            error += 1
+    return error / len(original_diacritics) * 100, error
 
-
-    
-    
 #################### Test the function with an example word ####################
 # # word = "نَقَلَ بَعْضُهُمْ أَنَّ الْقُهُسْتَانِيَّ كَتَبَ عَلَى هَامِشِ نُسْخَتِهِ أَنَّ هَذَا مُخْتَصٌّ بِالْأَذَانِ"
 # # word = "عَنْ سَعِيدِ بْنِ الْمُسَيِّبِ"

@@ -1,7 +1,12 @@
 import re
+import tensorflow as tf
 import numpy as np
 # from Preprocessing import character_encoding
 import character_encoding
+from Preprocessing import character_encoding
+import torch
+from torch.nn.utils.rnn import pad_sequence
+
 # from character_tokenizer import CharacterTokenizer
 # from nltk.tokenize.stanford_segmenter import StanfordSegmenter
 
@@ -12,6 +17,9 @@ def read_data(path: str) -> str:
         # train_set = f.read().splitlines()
         return f.read()
 
+def save_data(path: str, data: str):
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(data)
 
 # filter data takes a list of strings and removes unwanted patterns
 def filter_data(data: str) -> str:
@@ -28,7 +36,6 @@ def filter_data(data: str) -> str:
 
 
 # split data into sentences
-
 def split_data_to_sentences(data: str) -> list:
     # Split data into sentences using punctuation marks and newlines as delimiters
     # sentences = re.split(r"[.?!\n]", data)
@@ -36,7 +43,6 @@ def split_data_to_sentences(data: str) -> list:
     # Remove empty sentences
     sentences = [sentence for sentence in sentences if sentence.strip()]
     return sentences
-
 
 
 # character tokenizer returns a list of unique characters
@@ -47,17 +53,21 @@ def char_tokenizer(data: str):
     # int_to_char = dict((i, c) for i, c in enumerate(characters))
     return characters
 
+
 def split_data_to_words(data: str) -> list:
     words = re.split(r"\s+", data)
     return words
 
-def concatinate_word_char_embeddings(text_without_diacritics, diacritic_list, embedding_model, character_embedding_model):
+
+def concatinate_word_char_embeddings(
+    text_without_diacritics, diacritic_list, embedding_model, character_embedding_model
+):
     concatinated_vector = []
     diacritic_list_2 = []
     for i, word in enumerate(text_without_diacritics):
         # if word does not have corresponding embedding don't add it to the training set and remove its corresponding diacritic list
         try:
-            if embedding_model  is not None:
+            if embedding_model is not None:
                 word_vector = embedding_model.vector(word)
             diacritic_list_2.append(diacritic_list[i])
         except:
@@ -70,16 +80,27 @@ def concatinate_word_char_embeddings(text_without_diacritics, diacritic_list, em
                 char_vector = character_encoding.CharToOneHOt(char)
             else:
                 char_vector = character_embedding_model.vector(char)
-            
+
             if embedding_model is not None:
-                concatinated_vector.append(np.concatenate((word_vector, char_vector), axis=None))
+                concatinated_vector.append(
+                    np.concatenate((word_vector, char_vector), axis=None)
+                )
             else:
                 concatinated_vector.append(char_vector)
 
     return concatinated_vector, diacritic_list_2
 
 
-def diacritic_error_rate(text , predicted_text):
+def padding(sequences, max_length=100):
+    # return tf.keras.preprocessing.sequence.pad_sequences(sequences)
+    return pad_sequence([torch.tensor(seq) for seq in sequences], batch_first=True)
+
+
+def get_max_len(sequences):
+    return max([len(seq) for seq in sequences])
+
+
+def diacritic_error_rate(text, predicted_text):
     diacritic_error = 0
     for i in range(len(text)):
         if text[i] in character_encoding.DIACRITICS:
