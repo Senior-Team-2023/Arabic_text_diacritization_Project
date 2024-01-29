@@ -1,0 +1,13 @@
+{
+    "number_test_of_words": 10000, 
+    "number_validation_of_words": 1000, 
+    "classifier": "lstm", 
+    "embedding": "fasttext", 
+    "is_training": true,
+    "word_embeddings":false,
+    "character_embeddings": false,
+    "embedding_vector_size": 100,
+    "character_embedding_vector_size": 200,
+    "batch_size": 64,
+    "num_epochs": 7
+}
